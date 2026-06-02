@@ -5,13 +5,13 @@ public class Enemy : Unit
     // An Enemy is a Unit that targets the Player
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected override void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    protected override void Update()
     {
         
     }
@@ -31,7 +31,7 @@ public class Enemy : Unit
         //throw new System.NotImplementedException();
     }
 
-    protected override void Move()
+    protected override void Move(Vector3 targetDestination)
     {
         //throw new System.NotImplementedException();
     }

@@ -5,28 +5,35 @@ public abstract class Unit : MonoBehaviour
     // A Unit is an entity that has health and can move and attack another Unit
 
     protected Unit target = null;
+    protected Rigidbody unitsRigidbody;
     protected float speed = 4;
     protected float maxHealth;
     protected float currentHealth;
     protected float damageStrength = 3;
 
     // Awake is called once when GameObject is loaded regardless if the script is enabled
-    void Awake()
+    protected virtual void Awake()
     {
+        unitsRigidbody = GetComponent<Rigidbody>();
         // initialize components and internal variables
         InitializeHealth();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected virtual void Start()
     {
         
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         
+    }
+
+    protected virtual void FixedUpdate()
+    {
+
     }
 
     protected abstract void InitializeHealth();
@@ -35,7 +42,12 @@ public abstract class Unit : MonoBehaviour
 
     protected abstract void AttackTarget();
 
-    protected abstract void Move();
+    protected virtual void Move(Vector3 targetDestination)
+    {
+        Vector3 moveDirection = targetDestination * speed * Time.deltaTime;
+        //Debug.Log("Move Direction: " + moveDirection.ToString());
+        unitsRigidbody.MovePosition(transform.position + moveDirection);
+    }
 
     protected void DecreaseHealth(float damageTaken)
     {

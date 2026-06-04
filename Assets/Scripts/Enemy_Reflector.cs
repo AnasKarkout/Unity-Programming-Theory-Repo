@@ -2,15 +2,14 @@ using UnityEngine;
 
 public class Enemy_Reflector : Enemy
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected override void Start()
+    public override void TakeHit(float damageTaken)
     {
-        
+        ReflectDamage();
+        base.TakeHit(damageTaken);
     }
 
-    // Update is called once per frame
-    protected override void Update()
+    private void ReflectDamage()
     {
-        
+        AttackTarget();
     }
 }

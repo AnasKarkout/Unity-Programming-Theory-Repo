@@ -81,3 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf564e0dae5074845a1cf23760cc8b43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Reflector
+  moveSpeed: 2
+  rotationSpeed: 30
+  maxHealth: 15
+  bulletPrefab: {fileID: 5246218246625914109, guid: 2c5947e86f394eb4697603eb8df776e4, type: 3}

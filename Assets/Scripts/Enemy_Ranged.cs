@@ -1,16 +1,34 @@
+using System.Collections;
 using UnityEngine;
 
 public class Enemy_Ranged : Enemy
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private float attackDelay = 1.0f; // seconds between attacks
+    private bool isAimingAtTarget = false;
+
     protected override void Start()
     {
-        
+        base.Start();
     }
 
-    // Update is called once per frame
-    protected override void Update()
+    protected override void FixedUpdate()
     {
-        
+        base.FixedUpdate();
+
+        if (isLookingAtTarget && !isAimingAtTarget)
+        {
+            StartCoroutine(FireAtPlayer());
+        }
+    }
+
+    IEnumerator FireAtPlayer()
+    {
+        isAimingAtTarget = true;
+        while (isLookingAtTarget)
+        {
+            AttackTarget();
+            yield return new WaitForSeconds(attackDelay);
+        }
+        isAimingAtTarget = false;
     }
 }

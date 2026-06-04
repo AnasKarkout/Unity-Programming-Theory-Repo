@@ -81,3 +81,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94d7690e1421ab5428bc58380ea185c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Charger
+  moveSpeed: 2
+  rotationSpeed: 30
+  maxHealth: 15
+  bulletPrefab: {fileID: 0}

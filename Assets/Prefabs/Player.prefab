@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 5614310029574330517}
   - component: {fileID: 1077320277478182268}
   - component: {fileID: 4420278126735456454}
-  - component: {fileID: 1040656182316134455}
   - component: {fileID: 8400875492253117009}
+  - component: {fileID: 1040656182316134455}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -116,18 +116,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
---- !u!114 &1040656182316134455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2726705082189491349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a115847c3002ae4d803086cfcc74bbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Player
 --- !u!54 &8400875492253117009
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -152,6 +140,24 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 80
-  m_CollisionDetection: 0
+  m_Interpolate: 1
+  m_Constraints: 112
+  m_CollisionDetection: 1
+--- !u!114 &1040656182316134455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2726705082189491349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a115847c3002ae4d803086cfcc74bbc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player
+  moveSpeed: 4
+  rotationSpeed: 90
+  maxHealth: 20
+  damageStrength: 4
+  bulletPrefab: {fileID: 5833432614301776414, guid: d5f2dad5e7f7d1041a13545f65778d5f, type: 3}
+  jumpHeight: 7

@@ -1,33 +1,33 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : Unit
 {
     // A Player is a Unit that targets an Enemy and can collect Powerups
+    [SerializeField] private float jumpHeight = 5.0f;
 
     private PlayerInputActions inputActions;
     private Vector2 moveInput;
     private float rotationInput;
-    private InputAction jumpAction;
-
-    //private bool performJump = false;
+    private bool performJump = false;
+    private bool isOnGround = true;
 
     // Awake is called once when GameObject is loaded regardless if the script is enabled
     protected override void Awake()
     {
+        base.Awake();
+
         // Instantiate the generated actions class
         inputActions = new PlayerInputActions();
         inputActions.Enable();
-        
-        base.Awake();
     }
 
     private void OnEnable()
     {
-        // Subscribe to the move action's performed event
-
+        // Subscribe to the action's performed event
         inputActions.Player.Move.performed += OnMovePerformed;// ctx => moveInput = ctx.ReadValue<Vector2>();
-        inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+        inputActions.Player.Move.canceled += OnMovePerformed;// ctx => moveInput = Vector2.zero;
         inputActions.Player.Rotate.performed += OnRotatePerformed;
         inputActions.Player.Rotate.canceled += OnRotatePerformed;
         inputActions.Player.Jump.performed += OnJumpPerformed;
@@ -36,8 +36,9 @@ public class Player : Unit
 
     private void OnDisable()
     {
+        // Unsubscribe from the action's performed event
         inputActions.Player.Move.performed -= OnMovePerformed;// ctx => moveInput = ctx.ReadValue<Vector2>();
-        inputActions.Player.Move.canceled -= ctx => moveInput = Vector2.zero;
+        inputActions.Player.Move.canceled -= OnMovePerformed;// ctx => moveInput = Vector2.zero;
         inputActions.Player.Rotate.performed -= OnRotatePerformed;
         inputActions.Player.Rotate.canceled -= OnRotatePerformed;
         inputActions.Player.Jump.performed -= OnJumpPerformed;
@@ -50,70 +51,119 @@ public class Player : Unit
         
     }
 
-    private void OnMovePerformed(InputAction.CallbackContext context)
+    // Update is called once per frame
+    protected override void Update()
     {
-        Debug.Log("Move was pressed");
-        moveInput = context.ReadValue<Vector2>();
+        base.Update();
     }
 
-    private void OnJumpPerformed(InputAction.CallbackContext context)
+    protected override void FixedUpdate()
     {
-        Debug.Log("Jumping");
+        base.FixedUpdate();
+        DoJump();
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
     }
 
     private void OnRotatePerformed(InputAction.CallbackContext context)
     {
         rotationInput = context.ReadValue<float>();
-        Debug.Log("Rotating " +  rotationInput);
-        //transform.Rotate
+        if (rotationInput != 0)
+        {
+            overrideRotation = true;
+        }
+        else
+        {
+            overrideRotation = false;
+        }
+    }
+
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        if (isOnGround)
+        {
+            performJump = true;
+        }
     }
 
     private void OnFirePerformed(InputAction.CallbackContext context)
     {
-
+        if (target != null)
+        {
+            AttackTarget();
+        }
+        else
+        {
+            AcquireTarget();
+            if (target != null)
+            {
+                AttackTarget();
+            }
+        }
     }
 
-    // Update is called once per frame
-    protected override void Update()
+    protected override void DoMove()
     {
-        
-    }
-
-    protected override void FixedUpdate()
-    {
-        // Jump Action here
         if (moveInput != Vector2.zero)
         {
-            Vector2 moveInputNormalized = moveInput.normalized;
-            Vector3 targetPosition = new Vector3(moveInputNormalized.x, 0, moveInputNormalized.y);
-
+            // in this scene Vector2 is defined as (x = right, y = forward)
+            Vector3 moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
+            Vector3 targetPosition = transform.position + new Vector3(moveDirection.x, 0, moveDirection.z);
             Move(targetPosition);
         }
     }
 
-    protected override void InitializeHealth()
+    private void DoJump()
     {
-        //throw new System.NotImplementedException();
+        if (performJump)
+        {
+            Vector3 currentVelocity = unitsRigidbody.linearVelocity;
+            currentVelocity.y = jumpHeight;
+            unitsRigidbody.linearVelocity = currentVelocity; // This ensures consistent jump height ignoring physics unlike impulse
+            isOnGround = false;
+            performJump = false;
+        }
+    }
+
+    protected override void DoRotation()
+    {
+        if (rotationInput != 0)
+        {
+            targetRotation = unitsRigidbody.rotation * Quaternion.Euler(0, rotationInput * rotationSpeed, 0);
+            isLookingAtTarget = false;
+            Rotate();
+        }
+        else
+        {
+            if (target != null)
+            {
+                // TODO figure out why this makes the player rotation choppy
+                //base.DoRotation();
+            }
+        }
     }
 
     protected override void AcquireTarget()
     {
-        //throw new System.NotImplementedException();
+        if (target == null)
+        {
+            GameObject[] targets = GameObject.FindGameObjectsWithTag("Enemy");
+            if (targets.Length > 0)
+            {
+                target = targets
+                    .OrderBy(go => (go.transform.position - transform.position).sqrMagnitude)
+                    .First()
+                    .GetComponent<Unit>();
+            }
+        }
     }
-
-    protected override void AttackTarget()
-    {
-        //throw new System.NotImplementedException();
-    }
-
-    /*protected override void Move(Vector3 targetDestination)
-    {
-        //throw new System.NotImplementedException();
-        //unitsRigidbody.MovePosition()
-    }*/
 
     protected override void EndUnit()
     {
+        inputActions.Disable();
         base.EndUnit();
     }
 
@@ -123,6 +173,14 @@ public class Player : Unit
         {
             Debug.Log("Powerup collected");
             Destroy(other.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isOnGround = true;
         }
     }
 }

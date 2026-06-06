@@ -40,8 +40,6 @@ public class Enemy : Unit
     {
         moveTimeInterval = Random.Range(4.5f, 7f);
         startingPosition = transform.position;
-        Debug.Log("Enemy " + gameObject.name + " starting at " + startingPosition.ToString());
-        Debug.Log("this enemy spawner is " + enemySpawner.gameObject.name);
         newPosition = startingPosition;
 
         InvokeRepeating("SetNewPosition", moveTimeInterval, moveTimeInterval);

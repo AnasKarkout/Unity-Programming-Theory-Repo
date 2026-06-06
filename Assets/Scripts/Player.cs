@@ -48,7 +48,8 @@ public class Player : Unit
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
-        
+        base.Start();
+        bulletType = PoolType.BulletPlayer;
     }
 
     // Update is called once per frame
@@ -91,14 +92,14 @@ public class Player : Unit
 
     private void OnFirePerformed(InputAction.CallbackContext context)
     {
-        if (target != null)
+        if (TargetExists())
         {
             AttackTarget();
         }
         else
         {
             AcquireTarget();
-            if (target != null)
+            if (TargetExists())
             {
                 AttackTarget();
             }
@@ -138,7 +139,7 @@ public class Player : Unit
         }
         else
         {
-            if (target != null)
+            if (TargetExists())
             {
                 // TODO figure out why this makes the player rotation choppy
                 //base.DoRotation();
@@ -148,7 +149,7 @@ public class Player : Unit
 
     protected override void AcquireTarget()
     {
-        if (target == null)
+        if (!TargetExists())
         {
             GameObject[] targets = GameObject.FindGameObjectsWithTag("Enemy");
             if (targets.Length > 0)
@@ -172,7 +173,7 @@ public class Player : Unit
         if (other.gameObject.CompareTag("Powerup"))
         {
             Debug.Log("Powerup collected");
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }
     }
 

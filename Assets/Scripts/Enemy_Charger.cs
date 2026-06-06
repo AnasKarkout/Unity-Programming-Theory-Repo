@@ -52,7 +52,7 @@ public class Enemy_Charger : Enemy
 
     private void SetChargeTarget()
     {
-        if (target != null)
+        if (TargetExists())
         {
             chargeTarget = target.transform.position;
             BoxCollider collider = GetComponent<BoxCollider>();
@@ -69,5 +69,12 @@ public class Enemy_Charger : Enemy
         {
             collidedUnit.TakeHit(damageStrength);
         }
+    }
+
+    protected override void ResetBehavior()
+    {
+        base.ResetBehavior();
+        isCharging = false;
+        isOnCooldown = false;
     }
 }

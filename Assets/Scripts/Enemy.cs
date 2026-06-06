@@ -3,6 +3,7 @@ using UnityEngine;
 public class Enemy : Unit
 {
     // An Enemy is a Unit that targets the Player
+    public EnemySpawner enemySpawner;
 
     private Vector3 startingPosition;
     private Vector3 newPosition;
@@ -15,19 +16,13 @@ public class Enemy : Unit
     protected override void Awake()
     {
         base.Awake();
-
-        moveTimeInterval = Random.Range(4.5f, 7f);
-        startingPosition = transform.position;
-        newPosition = startingPosition;
-
-        InvokeRepeating("SetNewPosition", moveTimeInterval, moveTimeInterval);
-        AcquireTarget();
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected override void Start()
     {
-        
+        base.Start();
+        bulletType = PoolType.BulletEnemy;
     }
 
     // Update is called once per frame
@@ -39,6 +34,18 @@ public class Enemy : Unit
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
+    }
+
+    public virtual void StartEnemyActivity()
+    {
+        moveTimeInterval = Random.Range(4.5f, 7f);
+        startingPosition = transform.position;
+        Debug.Log("Enemy " + gameObject.name + " starting at " + startingPosition.ToString());
+        Debug.Log("this enemy spawner is " + enemySpawner.gameObject.name);
+        newPosition = startingPosition;
+
+        InvokeRepeating("SetNewPosition", moveTimeInterval, moveTimeInterval);
+        AcquireTarget();
     }
 
     protected override void AcquireTarget()
@@ -70,6 +77,17 @@ public class Enemy : Unit
 
     protected override void EndUnit()
     {
+        CancelInvoke();
+        enemySpawner.InvokeSpawnEnemy();
+        ResetBehavior();
         base.EndUnit();
+    }
+
+    protected virtual void ResetBehavior()
+    {
+        isMovingAround = false;
+        target = null;
+        isLookingAtTarget = false;
+        InitializeHealth();
     }
 }

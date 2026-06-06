@@ -10,7 +10,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float bulletSpeed = 5.0f;
     private Unit target;
     private Vector3 moveDirection;
-    private float timeAlive = 5.0f;
+    private float timeAlive = 7.0f;
 
     // Update is called once per frame
     void Update()
@@ -32,7 +32,12 @@ public class Bullet : MonoBehaviour
         Vector3 targetDirection = target.transform.position;
         moveDirection = (targetDirection - transform.position).normalized;
         transform.up = moveDirection;
-        Destroy(gameObject, timeAlive);
+        Invoke("DisableBullet", timeAlive);
+    }
+
+    private void DisableBullet()
+    {
+        gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -42,6 +47,10 @@ public class Bullet : MonoBehaviour
         {
             collidedUnit.TakeHit(damage);
         }
-        Destroy(gameObject);
+        if (!other.gameObject.CompareTag("Bullet"))
+        {
+            CancelInvoke("DisableBullet");
+            DisableBullet();
+        }
     }
 }

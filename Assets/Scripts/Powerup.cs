@@ -21,6 +21,6 @@ public class Powerup : MonoBehaviour
     IEnumerator GroundLifecycle()
     {
         yield return new WaitForSeconds(lifespanOnGround);
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 }

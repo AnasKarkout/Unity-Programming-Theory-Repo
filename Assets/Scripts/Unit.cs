@@ -20,6 +20,7 @@ public abstract class Unit : MonoBehaviour
     protected bool overrideRotation = false;
 
     [SerializeField] private GameObject bulletPrefab;
+    protected PoolType bulletType;
     protected bool debug = false;
 
 
@@ -40,7 +41,7 @@ public abstract class Unit : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        if (target != null && !overrideRotation)
+        if (TargetExists() && !overrideRotation)
         {
             CalculateAngleToTarget();
         }
@@ -56,11 +57,19 @@ public abstract class Unit : MonoBehaviour
 
     protected virtual void AttackTarget()
     {
-        Vector3 currentPosition = transform.position;
-        GameObject bulletObject = Instantiate(bulletPrefab, currentPosition + transform.forward, Quaternion.identity);
-        Bullet bullet = bulletObject.GetComponent<Bullet>();
-        bullet.damage = damageStrength;
+
+        Bullet bullet = CreateBullet();
+        //bullet.damage = damageStrength;
         bullet.AimAtTarget(target);
+    }
+
+    private Bullet CreateBullet()
+    {
+        Vector3 currentPosition = transform.position;
+        GameObject bulletObject = ObjectPooler.SharedInstance.GetPooledObject(bulletType);// Instantiate(bulletPrefab, currentPosition + transform.forward, Quaternion.identity);
+        bulletObject.SetActive(true);
+        bulletObject.transform.position = currentPosition + transform.forward;
+        return bulletObject.GetComponent<Bullet>();
     }
 
     protected abstract void DoMove();
@@ -73,7 +82,7 @@ public abstract class Unit : MonoBehaviour
 
     protected virtual void DoRotation()
     {
-        if (target != null)
+        if (TargetExists())
         {
             LookAtTarget();
         }
@@ -125,7 +134,7 @@ public abstract class Unit : MonoBehaviour
     public virtual void TakeHit(float damageTaken)
     {
         currentHealth -= damageTaken;
-        Debug.Log(gameObject.name + " took " + damageTaken + " hit and now has " + currentHealth + " hp.");
+        //Debug.Log(gameObject.name + " took " + damageTaken + " hit and now has " + currentHealth + " hp.");
         if (currentHealth <= 0)
         {
             EndUnit();
@@ -134,6 +143,11 @@ public abstract class Unit : MonoBehaviour
 
     protected virtual void EndUnit()
     {
-        Destroy(gameObject);
+        gameObject.SetActive(false);
+    }
+
+    protected bool TargetExists()
+    {
+        return target != null && target.gameObject.activeInHierarchy;
     }
 }

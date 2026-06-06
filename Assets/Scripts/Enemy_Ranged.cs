@@ -31,4 +31,10 @@ public class Enemy_Ranged : Enemy
         }
         isAimingAtTarget = false;
     }
+
+    protected override void ResetBehavior()
+    {
+        base.ResetBehavior();
+        isAimingAtTarget = false;
+    }
 }

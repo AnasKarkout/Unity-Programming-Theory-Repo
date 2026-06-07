@@ -59,14 +59,14 @@ public abstract class Unit : MonoBehaviour
     {
 
         Bullet bullet = CreateBullet();
-        //bullet.damage = damageStrength;
+        bullet.damage = damageStrength;
         bullet.AimAtTarget(target);
     }
 
     private Bullet CreateBullet()
     {
         Vector3 currentPosition = transform.position;
-        GameObject bulletObject = ObjectPooler.SharedInstance.GetPooledObject(bulletType);// Instantiate(bulletPrefab, currentPosition + transform.forward, Quaternion.identity);
+        GameObject bulletObject = ObjectPooler.SharedInstance.GetPooledObject(bulletType);
         bulletObject.SetActive(true);
         bulletObject.transform.position = currentPosition + transform.forward;
         return bulletObject.GetComponent<Bullet>();
@@ -134,7 +134,7 @@ public abstract class Unit : MonoBehaviour
     public virtual void TakeHit(float damageTaken)
     {
         currentHealth -= damageTaken;
-        //Debug.Log(gameObject.name + " took " + damageTaken + " hit and now has " + currentHealth + " hp.");
+        Debug.Log(gameObject.name + " took " + damageTaken + " hit and now has " + currentHealth + " hp.");
         if (currentHealth <= 0)
         {
             EndUnit();

@@ -47,7 +47,7 @@ public class Bullet : MonoBehaviour
         {
             collidedUnit.TakeHit(damage);
         }
-        if (!other.gameObject.CompareTag("Bullet"))
+        if (!other.gameObject.CompareTag("Bullet") && !other.gameObject.CompareTag("Powerup"))
         {
             CancelInvoke("DisableBullet");
             DisableBullet();

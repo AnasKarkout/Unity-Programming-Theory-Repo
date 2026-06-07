@@ -4,7 +4,7 @@ public class Enemy_Charger : Enemy
 {
     private bool isCharging = false;
     private bool isOnCooldown = false;
-    private float chargeSpeed = 15.0f;
+    private float chargeSpeedMultiplier = 7.0f;
     private float chargeCooldown = 2.0f;
     private Vector3 chargeTarget;
 
@@ -46,7 +46,7 @@ public class Enemy_Charger : Enemy
     protected override void AttackTarget()
     {
         isCharging = true;
-        moveSpeed = chargeSpeed;
+        moveSpeed *= chargeSpeedMultiplier;
         SetChargeTarget();
     }
 
@@ -74,6 +74,10 @@ public class Enemy_Charger : Enemy
     protected override void ResetBehavior()
     {
         base.ResetBehavior();
+        if (isCharging)
+        {
+            moveSpeed /= chargeSpeedMultiplier;
+        }
         isCharging = false;
         isOnCooldown = false;
     }

@@ -14,7 +14,6 @@ public class Enemy_Ranged : Enemy
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-
         if (isLookingAtTarget && !isAimingAtTarget)
         {
             StartCoroutine(FireAtPlayer());

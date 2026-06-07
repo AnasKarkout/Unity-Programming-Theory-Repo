@@ -39,7 +39,10 @@ public class EnemySpawner : SpawnManager
         Vector3 enemyColliderSize = enemyCollider.bounds.size;
         Vector3 spawnPoint = transform.position;
         spawnPoint.y = spawnerColliderSize.y + enemyColliderSize.y / 2 + 0.01f;
+        Debug.Log("spawnPoint = " + spawnPoint.ToString());
         enemyObject.transform.position = spawnPoint;
+        enemyObject.GetComponent<Rigidbody>().position = spawnPoint;
+        Debug.Log("Enemy spawned at " + enemyObject.transform.position);
         enemyObject.transform.rotation = transform.rotation;
         return enemyObject.GetComponent<Enemy>();
     }

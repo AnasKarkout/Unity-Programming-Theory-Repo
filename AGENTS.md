@@ -2,7 +2,7 @@
 - Project name: Unity-Programming-Theory-Repo
 - Unity version: Unity 6000.3.10f1
 - Active game object:
-  - Name: Player
-  - Tag: Player
+  - Name: Bullet_Player Variant
+  - Tag: Bullet
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->

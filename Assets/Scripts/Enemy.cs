@@ -41,7 +41,6 @@ public class Enemy : Unit
         moveTimeInterval = Random.Range(4.5f, 7f);
         startingPosition = transform.position;
         newPosition = startingPosition;
-
         InvokeRepeating("SetNewPosition", moveTimeInterval, moveTimeInterval);
         AcquireTarget();
     }
@@ -86,6 +85,7 @@ public class Enemy : Unit
         isMovingAround = false;
         target = null;
         isLookingAtTarget = false;
+        unitsRigidbody.linearVelocity = Vector3.zero;
         InitializeHealth();
     }
 }
